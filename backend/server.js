@@ -14,6 +14,16 @@ const adminRoutes = require('./routes/admin');
 const remoteRoutes = require('./routes/remote');
 const emailRoutes = require('./routes/email');
 const smtpRoutes = require('./routes/smtp');
+const securityRoutes = require('./routes/security');
+const webhooksRoutes = require('./routes/webhooks');
+const userTagsRoutes = require('./routes/userTags');
+const commandPresetsRoutes = require('./routes/commandPresets');
+const fileTransferRoutes = require('./routes/fileTransfer');
+const clipboardRoutes = require('./routes/clipboard');
+const screenViewRoutes = require('./routes/screenView');
+const crashReportsRoutes = require('./routes/crashReports');
+const offlineCacheRoutes = require('./routes/offlineCache');
+const keyStatisticsRoutes = require('./routes/keyStatistics');
 
 const app = express();
 const server = http.createServer(app);
@@ -62,6 +72,16 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/remote', remoteRoutes);
 app.use('/api/email', emailRoutes);
 app.use('/api/smtp', smtpRoutes);
+app.use('/api/security', securityRoutes);
+app.use('/api/webhooks', webhooksRoutes);
+app.use('/api/user-tags', userTagsRoutes);
+app.use('/api/command-presets', commandPresetsRoutes);
+app.use('/api/file-transfer', fileTransferRoutes);
+app.use('/api/clipboard', clipboardRoutes);
+app.use('/api/screen-view', screenViewRoutes);
+app.use('/api/crash-reports', crashReportsRoutes);
+app.use('/api/offline-cache', offlineCacheRoutes);
+app.use('/api/key-statistics', keyStatisticsRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
