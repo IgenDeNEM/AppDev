@@ -28,6 +28,65 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+/* Verification Screen */
+#verification-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.verification-container {
+    width: 100%;
+    max-width: 400px;
+    padding: 20px;
+}
+
+.verification-card {
+    background: white;
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.verification-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.verification-header h1 {
+    color: #333;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.verification-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+.verification-actions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn-text {
+    background: none;
+    border: none;
+    color: #667eea;
+    font-size: 14px;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-text:hover {
+    background: rgba(102, 126, 234, 0.1);
+}
+
 .login-container {
     width: 100%;
     max-width: 400px;

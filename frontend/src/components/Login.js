@@ -52,6 +52,14 @@ function Login() {
     registrationKey: ''
   });
 
+  // Email verification state
+  const [verificationStep, setVerificationStep] = useState(null);
+  const [verificationData, setVerificationData] = useState({
+    email: '',
+    code: '',
+    userId: null
+  });
+
   const { login, register } = useAuth();
 
   const handleTabChange = (event, newValue) => {
@@ -69,6 +77,13 @@ function Login() {
     
     if (!result.success) {
       setError(result.error);
+    } else if (result.requires2FA) {
+      setVerificationStep('2fa');
+      setVerificationData({
+        email: result.user?.email || '',
+        userId: result.userId
+      });
+      setSuccess('Two-factor authentication required. Please check your email for verification code.');
     }
     
     setLoading(false);
@@ -94,20 +109,131 @@ function Login() {
     );
     
     if (result.success) {
-      setSuccess('Registration successful! You can now login.');
-      setTabValue(0);
-      setRegisterData({
-        username: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        registrationKey: ''
-      });
+      if (result.requiresVerification) {
+        setVerificationStep('registration');
+        setVerificationData({
+          email: registerData.email,
+          userId: result.userId
+        });
+        setSuccess('Registration successful! Please check your email for verification code.');
+      } else {
+        setSuccess('Registration successful! You can now login.');
+        setTabValue(0);
+        setRegisterData({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+          registrationKey: ''
+        });
+      }
     } else {
       setError(result.error);
     }
     
     setLoading(false);
+  };
+
+  const handleVerificationCode = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/email/verify-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: verificationData.email,
+          code: verificationData.code,
+          type: verificationStep
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.valid) {
+        if (verificationStep === '2fa') {
+          // Complete 2FA login
+          const loginResponse = await fetch('/api/auth/complete-2fa', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              userId: verificationData.userId,
+              code: verificationData.code
+            }),
+          });
+
+          const loginResult = await loginResponse.json();
+
+          if (loginResult.token) {
+            localStorage.setItem('token', loginResult.token);
+            window.location.reload();
+          } else {
+            setError(loginResult.error || '2FA verification failed');
+          }
+        } else if (verificationStep === 'registration') {
+          setSuccess('Email verified successfully! You can now login.');
+          setVerificationStep(null);
+          setTabValue(0);
+          setRegisterData({
+            username: '',
+            email: '',
+            password: '',
+            confirmPassword: '',
+            registrationKey: ''
+          });
+        }
+      } else {
+        setError(result.error);
+      }
+    } catch (error) {
+      setError('Verification failed. Please try again.');
+    }
+
+    setLoading(false);
+  };
+
+  const handleResendCode = async () => {
+    setLoading(true);
+    setError('');
+
+    try {
+      const response = await fetch('/api/email/send-verification-code', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: verificationData.email,
+          type: verificationStep,
+          userId: verificationData.userId
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        setSuccess('Verification code sent successfully!');
+      } else {
+        setError(result.error || 'Failed to send verification code');
+      }
+    } catch (error) {
+      setError('Failed to send verification code');
+    }
+
+    setLoading(false);
+  };
+
+  const handleBackToLogin = () => {
+    setVerificationStep(null);
+    setVerificationData({ email: '', code: '', userId: null });
+    setError('');
+    setSuccess('');
   };
 
   return (
@@ -125,12 +251,14 @@ function Login() {
             Tweak Application
           </Typography>
           
-          <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-            <Tabs value={tabValue} onChange={handleTabChange} aria-label="login tabs">
-              <Tab label="Login" />
-              <Tab label="Register" />
-            </Tabs>
-          </Box>
+          {!verificationStep && (
+            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+              <Tabs value={tabValue} onChange={handleTabChange} aria-label="login tabs">
+                <Tab label="Login" />
+                <Tab label="Register" />
+              </Tabs>
+            </Box>
+          )}
 
           {error && (
             <Alert severity="error" sx={{ mt: 2 }}>
@@ -144,7 +272,58 @@ function Login() {
             </Alert>
           )}
 
-          <TabPanel value={tabValue} index={0}>
+          {verificationStep && (
+            <Box sx={{ mt: 2 }}>
+              <Typography variant="h6" align="center" gutterBottom>
+                {verificationStep === '2fa' ? 'Two-Factor Authentication' : 'Email Verification'}
+              </Typography>
+              <Typography variant="body2" align="center" color="textSecondary" sx={{ mb: 3 }}>
+                We've sent an 8-digit verification code to {verificationData.email}
+              </Typography>
+              
+              <Box component="form" onSubmit={handleVerificationCode}>
+                <TextField
+                  fullWidth
+                  label="Verification Code"
+                  value={verificationData.code}
+                  onChange={(e) => setVerificationData({ ...verificationData, code: e.target.value })}
+                  placeholder="12345678"
+                  inputProps={{ maxLength: 8, style: { textAlign: 'center', fontSize: '1.5rem', letterSpacing: '0.5rem' } }}
+                  sx={{ mb: 2 }}
+                />
+                
+                <Button
+                  type="submit"
+                  fullWidth
+                  variant="contained"
+                  sx={{ mb: 2 }}
+                  disabled={loading || verificationData.code.length !== 8}
+                >
+                  {loading ? <CircularProgress size={24} /> : 'Verify Code'}
+                </Button>
+                
+                <Box display="flex" justifyContent="space-between">
+                  <Button
+                    variant="text"
+                    onClick={handleResendCode}
+                    disabled={loading}
+                  >
+                    Resend Code
+                  </Button>
+                  <Button
+                    variant="text"
+                    onClick={handleBackToLogin}
+                  >
+                    Back to Login
+                  </Button>
+                </Box>
+              </Box>
+            </Box>
+          )}
+
+          {!verificationStep && (
+            <>
+              <TabPanel value={tabValue} index={0}>
             <Box component="form" onSubmit={handleLogin} sx={{ mt: 1 }}>
               <TextField
                 margin="normal"
@@ -251,6 +430,8 @@ function Login() {
               </Button>
             </Box>
           </TabPanel>
+            </>
+          )}
         </Paper>
       </Box>
     </Container>

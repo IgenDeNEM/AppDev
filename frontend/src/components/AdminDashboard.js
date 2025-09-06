@@ -27,7 +27,8 @@ import {
   Terminal as TerminalIcon,
   Assessment as LogsIcon,
   Logout as LogoutIcon,
-  Add as AddIcon
+  Add as AddIcon,
+  Email as EmailIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import UserManagement from './admin/UserManagement';
@@ -35,6 +36,7 @@ import KeyManagement from './admin/KeyManagement';
 import RemoteControl from './admin/RemoteControl';
 import ActivityLogs from './admin/ActivityLogs';
 import DashboardOverview from './admin/DashboardOverview';
+import EmailManagement from './admin/EmailManagement';
 
 const drawerWidth = 240;
 
@@ -52,6 +54,7 @@ function AdminDashboard() {
     { id: 'users', label: 'User Management', icon: <PeopleIcon /> },
     { id: 'keys', label: 'Key Management', icon: <KeyIcon /> },
     { id: 'remote', label: 'Remote Control', icon: <ScreenIcon /> },
+    { id: 'email', label: 'Email Management', icon: <EmailIcon /> },
     { id: 'logs', label: 'Activity Logs', icon: <LogsIcon /> },
   ];
 
@@ -96,6 +99,8 @@ function AdminDashboard() {
         return <KeyManagement />;
       case 'remote':
         return <RemoteControl />;
+      case 'email':
+        return <EmailManagement />;
       case 'logs':
         return <ActivityLogs />;
       default:

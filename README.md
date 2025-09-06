@@ -8,6 +8,7 @@ A comprehensive system optimization and remote management application with an ad
 - **User Management**: Add/remove admins, reset passwords, view online users
 - **Registration Key System**: Generate and manage registration keys for new users
 - **Remote Control**: Execute commands on user machines, request screen captures
+- **Email Management**: SMTP configuration, email statistics, and verification management
 - **Activity Logging**: Comprehensive logging of all system activities
 - **Real-time Monitoring**: Monitor online users and system status
 
@@ -15,6 +16,7 @@ A comprehensive system optimization and remote management application with an ad
 - **System Optimization**: Clean temporary files, optimize performance
 - **System Monitoring**: Real-time memory, disk, and network monitoring
 - **Remote Management**: Accept remote commands and screen capture requests
+- **Email Verification**: Two-factor authentication and email verification support
 - **System Information**: Detailed system specs and status
 - **Security**: Secure authentication and encrypted communication
 
@@ -38,6 +40,7 @@ A comprehensive system optimization and remote management application with an ad
 
 - Node.js (v16 or higher)
 - MariaDB (v10.3 or higher)
+- SMTP email server (Gmail, Outlook, SendGrid, etc.)
 - npm or yarn
 
 ## Installation
@@ -72,7 +75,7 @@ npm install
 cp .env.example .env
 ```
 
-Edit `.env` file with your database credentials:
+Edit `.env` file with your database and SMTP credentials:
 
 ```env
 DB_HOST=localhost
@@ -86,6 +89,22 @@ PORT=3001
 NODE_ENV=development
 ADMIN_EMAIL=admin@tweak.com
 ADMIN_PASSWORD=admin123
+
+# SMTP Configuration
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+SMTP_FROM_EMAIL=noreply@tweak.com
+SMTP_FROM_NAME=Tweak Application
+
+# Security Configuration
+MAX_FAILED_LOGIN_ATTEMPTS=5
+ACCOUNT_LOCKOUT_DURATION=30
+EMAIL_RATE_LIMIT_WINDOW=15
+EMAIL_RATE_LIMIT_MAX=10
+VERIFICATION_CODE_EXPIRY=10
 ```
 
 ### 4. Frontend Setup

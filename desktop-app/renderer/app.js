@@ -4,6 +4,7 @@ class TweakApp {
     constructor() {
         this.currentUser = null;
         this.systemInfo = null;
+        this.verificationData = null;
         this.init();
     }
 
@@ -35,6 +36,24 @@ class TweakApp {
         document.getElementById('cmd-btn').addEventListener('click', () => this.openCommandPrompt());
         document.getElementById('screenshot-btn').addEventListener('click', () => this.takeScreenshot());
         document.getElementById('system-info-btn').addEventListener('click', () => this.showSystemInfo());
+
+        // Verification form
+        const verificationForm = document.getElementById('verification-form');
+        if (verificationForm) {
+            verificationForm.addEventListener('submit', (e) => this.handleVerification(e));
+        }
+
+        // Resend code button
+        const resendCodeBtn = document.getElementById('resend-code-btn');
+        if (resendCodeBtn) {
+            resendCodeBtn.addEventListener('click', () => this.resendVerificationCode());
+        }
+
+        // Back to login button
+        const backToLoginBtn = document.getElementById('back-to-login-btn');
+        if (backToLoginBtn) {
+            backToLoginBtn.addEventListener('click', () => this.showLoginScreen());
+        }
     }
 
     setupNavigation() {
@@ -70,15 +89,22 @@ class TweakApp {
         const errorDiv = document.getElementById('login-error');
 
         try {
-            const result = await ipcRenderer.invoke('login', { username, password });
-            
-            if (result.success) {
-                this.currentUser = result.user;
-                this.showMainScreen();
-                this.loadSystemInfo();
-            } else {
-                this.showError(errorDiv, result.error);
-            }
+                    const result = await ipcRenderer.invoke('login', { username, password });
+        
+        if (result.success) {
+            this.currentUser = result.user;
+            this.showMainScreen();
+            this.loadSystemInfo();
+        } else if (result.requires2FA) {
+            this.verificationData = {
+                email: result.user?.email || '',
+                userId: result.userId,
+                type: '2fa'
+            };
+            this.showVerificationScreen();
+        } else {
+            this.showError(errorDiv, result.error);
+        }
         } catch (error) {
             this.showError(errorDiv, 'Login failed. Please try again.');
         }
@@ -92,13 +118,27 @@ class TweakApp {
     showLoginScreen() {
         document.getElementById('login-screen').classList.add('active');
         document.getElementById('main-screen').classList.remove('active');
+        document.getElementById('verification-screen').classList.remove('active');
         document.getElementById('login-form').reset();
         document.getElementById('login-error').style.display = 'none';
+        this.verificationData = null;
+    }
+
+    showVerificationScreen() {
+        document.getElementById('login-screen').classList.remove('active');
+        document.getElementById('main-screen').classList.remove('active');
+        document.getElementById('verification-screen').classList.add('active');
+        
+        const messageElement = document.getElementById('verification-message');
+        if (this.verificationData) {
+            messageElement.textContent = `We've sent an 8-digit verification code to ${this.verificationData.email}`;
+        }
     }
 
     showMainScreen() {
         document.getElementById('login-screen').classList.remove('active');
         document.getElementById('main-screen').classList.add('active');
+        document.getElementById('verification-screen').classList.remove('active');
         
         // Update user info
         const userInfo = document.getElementById('user-info');
@@ -307,6 +347,103 @@ class TweakApp {
         
         document.querySelector('[data-section="system"]').classList.add('active');
         document.getElementById('system-section').classList.add('active');
+    }
+
+    async handleVerification(e) {
+        e.preventDefault();
+        
+        const code = document.getElementById('verification-code').value;
+        const errorDiv = document.getElementById('verification-error');
+
+        if (code.length !== 8) {
+            this.showError(errorDiv, 'Please enter an 8-digit verification code');
+            return;
+        }
+
+        try {
+            // Verify code with backend
+            const response = await fetch('http://localhost:3001/api/email/verify-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: this.verificationData.email,
+                    code: code,
+                    type: this.verificationData.type
+                }),
+            });
+
+            const result = await response.json();
+
+            if (result.valid) {
+                if (this.verificationData.type === '2fa') {
+                    // Complete 2FA login
+                    const loginResponse = await fetch('http://localhost:3001/api/auth/complete-2fa', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            userId: this.verificationData.userId,
+                            code: code
+                        }),
+                    });
+
+                    const loginResult = await loginResponse.json();
+
+                    if (loginResult.token) {
+                        // Store token and proceed to main screen
+                        this.currentUser = loginResult.user;
+                        this.showMainScreen();
+                        this.loadSystemInfo();
+                    } else {
+                        this.showError(errorDiv, loginResult.error || '2FA verification failed');
+                    }
+                } else {
+                    // Registration verification - show success and go to login
+                    this.showError(errorDiv, 'Email verified successfully! You can now login.');
+                    setTimeout(() => {
+                        this.showLoginScreen();
+                    }, 2000);
+                }
+            } else {
+                this.showError(errorDiv, result.error);
+            }
+        } catch (error) {
+            this.showError(errorDiv, 'Verification failed. Please try again.');
+        }
+    }
+
+    async resendVerificationCode() {
+        if (!this.verificationData) return;
+
+        try {
+            const response = await fetch('http://localhost:3001/api/email/send-verification-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: this.verificationData.email,
+                    type: this.verificationData.type,
+                    userId: this.verificationData.userId
+                }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok) {
+                const errorDiv = document.getElementById('verification-error');
+                this.showError(errorDiv, 'Verification code sent successfully!');
+            } else {
+                const errorDiv = document.getElementById('verification-error');
+                this.showError(errorDiv, result.error || 'Failed to send verification code');
+            }
+        } catch (error) {
+            const errorDiv = document.getElementById('verification-error');
+            this.showError(errorDiv, 'Failed to send verification code');
+        }
     }
 }
 

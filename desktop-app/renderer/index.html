@@ -41,6 +41,41 @@
             </div>
         </div>
 
+        <!-- Email Verification Screen -->
+        <div id="verification-screen" class="screen">
+            <div class="verification-container">
+                <div class="verification-card">
+                    <div class="verification-header">
+                        <h1>Email Verification</h1>
+                        <p id="verification-message">We've sent an 8-digit verification code to your email</p>
+                    </div>
+                    
+                    <form id="verification-form">
+                        <div class="form-group">
+                            <label for="verification-code">Verification Code</label>
+                            <input type="text" id="verification-code" name="verification-code" maxlength="8" required>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-primary">
+                            <span class="material-icons">verified</span>
+                            Verify Code
+                        </button>
+                    </form>
+                    
+                    <div class="verification-actions">
+                        <button id="resend-code-btn" class="btn btn-text">
+                            Resend Code
+                        </button>
+                        <button id="back-to-login-btn" class="btn btn-text">
+                            Back to Login
+                        </button>
+                    </div>
+                    
+                    <div id="verification-error" class="error-message"></div>
+                </div>
+            </div>
+        </div>
+
         <!-- Main Application Screen -->
         <div id="main-screen" class="screen">
             <header class="app-header">

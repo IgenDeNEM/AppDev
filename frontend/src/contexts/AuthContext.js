@@ -30,7 +30,16 @@ export const AuthProvider = ({ children }) => {
         password
       });
 
-      const { token, user: userData } = response.data;
+      const { token, user: userData, requires2FA, userId } = response.data;
+      
+      if (requires2FA) {
+        return { 
+          success: false, 
+          requires2FA: true,
+          userId: userId,
+          user: userData
+        };
+      }
       
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -54,7 +63,14 @@ export const AuthProvider = ({ children }) => {
         registrationKey
       });
 
-      return { success: true, message: response.data.message };
+      const { message, requiresVerification, userId } = response.data;
+
+      return { 
+        success: true, 
+        message: message,
+        requiresVerification: requiresVerification,
+        userId: userId
+      };
     } catch (error) {
       return { 
         success: false, 

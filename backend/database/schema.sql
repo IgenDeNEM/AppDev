@@ -67,6 +67,67 @@ CREATE TABLE IF NOT EXISTS screen_captures (
     FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
+-- Email verification codes table
+CREATE TABLE IF NOT EXISTS email_verification_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    email VARCHAR(100) NOT NULL,
+    code VARCHAR(8) NOT NULL,
+    type ENUM('registration', 'login_2fa', 'password_reset', 'password_change', 'admin_creation', 'role_change', 'security_alert') NOT NULL,
+    is_used BOOLEAN DEFAULT FALSE,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    used_at TIMESTAMP NULL,
+    attempts INT DEFAULT 0,
+    max_attempts INT DEFAULT 3,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- Email logs table
+CREATE TABLE IF NOT EXISTS email_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NULL,
+    email VARCHAR(100) NOT NULL,
+    type ENUM('verification_code', 'password_reset', 'admin_alert', 'security_alert', 'system_notification') NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    status ENUM('sent', 'delivered', 'failed', 'bounced') DEFAULT 'sent',
+    error_message TEXT NULL,
+    sent_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    delivered_at TIMESTAMP NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+);
+
+-- SMTP configuration table
+CREATE TABLE IF NOT EXISTS smtp_config (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    host VARCHAR(255) NOT NULL,
+    port INT NOT NULL,
+    secure BOOLEAN DEFAULT FALSE,
+    username VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    from_email VARCHAR(255) NOT NULL,
+    from_name VARCHAR(255) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- User security settings table
+CREATE TABLE IF NOT EXISTS user_security_settings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    two_factor_enabled BOOLEAN DEFAULT FALSE,
+    email_notifications BOOLEAN DEFAULT TRUE,
+    security_alerts BOOLEAN DEFAULT TRUE,
+    failed_login_attempts INT DEFAULT 0,
+    last_failed_login TIMESTAMP NULL,
+    account_locked_until TIMESTAMP NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_user_security (user_id)
+);
+
 -- Create indexes for better performance
 CREATE INDEX idx_users_username ON users(username);
 CREATE INDEX idx_users_email ON users(email);
@@ -80,3 +141,12 @@ CREATE INDEX idx_remote_commands_admin_id ON remote_commands(admin_id);
 CREATE INDEX idx_remote_commands_target_user_id ON remote_commands(target_user_id);
 CREATE INDEX idx_screen_captures_user_id ON screen_captures(user_id);
 CREATE INDEX idx_screen_captures_admin_id ON screen_captures(admin_id);
+CREATE INDEX idx_email_verification_codes_email ON email_verification_codes(email);
+CREATE INDEX idx_email_verification_codes_code ON email_verification_codes(code);
+CREATE INDEX idx_email_verification_codes_expires_at ON email_verification_codes(expires_at);
+CREATE INDEX idx_email_verification_codes_type ON email_verification_codes(type);
+CREATE INDEX idx_email_logs_user_id ON email_logs(user_id);
+CREATE INDEX idx_email_logs_email ON email_logs(email);
+CREATE INDEX idx_email_logs_type ON email_logs(type);
+CREATE INDEX idx_email_logs_sent_at ON email_logs(sent_at);
+CREATE INDEX idx_user_security_settings_user_id ON user_security_settings(user_id);

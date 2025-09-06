@@ -12,6 +12,8 @@ const { testConnection } = require('./config/database');
 const authRoutes = require('./routes/auth');
 const adminRoutes = require('./routes/admin');
 const remoteRoutes = require('./routes/remote');
+const emailRoutes = require('./routes/email');
+const smtpRoutes = require('./routes/smtp');
 
 const app = express();
 const server = http.createServer(app);
@@ -58,6 +60,8 @@ app.set('trust proxy', 1);
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/remote', remoteRoutes);
+app.use('/api/email', emailRoutes);
+app.use('/api/smtp', smtpRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {
