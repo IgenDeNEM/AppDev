@@ -54,6 +54,12 @@ class TweakApp {
         if (backToLoginBtn) {
             backToLoginBtn.addEventListener('click', () => this.showLoginScreen());
         }
+
+        // Settings button
+        const settingsBtn = document.getElementById('settings-btn');
+        if (settingsBtn) {
+            settingsBtn.addEventListener('click', () => this.openSettings());
+        }
     }
 
     setupNavigation() {
@@ -122,6 +128,16 @@ class TweakApp {
         document.getElementById('login-form').reset();
         document.getElementById('login-error').style.display = 'none';
         this.verificationData = null;
+    }
+
+    openSettings() {
+        // Open settings window
+        if (window.electronAPI) {
+            window.electronAPI.openSettingsWindow();
+        } else {
+            // Fallback for web version - open in new tab
+            window.open('settings-ui.html', '_blank');
+        }
     }
 
     showVerificationScreen() {

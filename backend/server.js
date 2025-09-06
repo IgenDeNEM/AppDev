@@ -24,6 +24,7 @@ const screenViewRoutes = require('./routes/screenView');
 const crashReportsRoutes = require('./routes/crashReports');
 const offlineCacheRoutes = require('./routes/offlineCache');
 const keyStatisticsRoutes = require('./routes/keyStatistics');
+const advancedSearchRoutes = require('./routes/advancedSearch');
 
 const app = express();
 const server = http.createServer(app);
@@ -82,6 +83,7 @@ app.use('/api/screen-view', screenViewRoutes);
 app.use('/api/crash-reports', crashReportsRoutes);
 app.use('/api/offline-cache', offlineCacheRoutes);
 app.use('/api/key-statistics', keyStatisticsRoutes);
+app.use('/api/advanced-search', advancedSearchRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

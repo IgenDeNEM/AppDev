@@ -29,7 +29,8 @@ import {
   Logout as LogoutIcon,
   Add as AddIcon,
   Email as EmailIcon,
-  BarChart as BarChartIcon
+  BarChart as BarChartIcon,
+  Search as SearchIcon
 } from '@mui/icons-material';
 import { useAuth } from '../contexts/AuthContext';
 import UserManagement from './admin/UserManagement';
@@ -39,6 +40,8 @@ import ActivityLogs from './admin/ActivityLogs';
 import DashboardOverview from './admin/DashboardOverview';
 import EmailManagement from './admin/EmailManagement';
 import KeyStatistics from './admin/KeyStatistics';
+import AdvancedUserSearch from './admin/AdvancedUserSearch';
+import { ThemeMenu } from './ThemeToggle';
 
 const drawerWidth = 240;
 
@@ -54,6 +57,7 @@ function AdminDashboard() {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
     { id: 'users', label: 'User Management', icon: <PeopleIcon /> },
+    { id: 'search', label: 'Advanced Search', icon: <SearchIcon /> },
     { id: 'keys', label: 'Key Management', icon: <KeyIcon /> },
     { id: 'statistics', label: 'Key Statistics', icon: <BarChartIcon /> },
     { id: 'remote', label: 'Remote Control', icon: <ScreenIcon /> },
@@ -98,6 +102,8 @@ function AdminDashboard() {
         return <DashboardOverview />;
       case 'users':
         return <UserManagement />;
+      case 'search':
+        return <AdvancedUserSearch />;
       case 'keys':
         return <KeyManagement />;
       case 'statistics':
@@ -135,10 +141,12 @@ function AdminDashboard() {
           <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
             Tweak Admin Dashboard
           </Typography>
+          <ThemeMenu />
           <Chip 
             label={`Welcome, ${user?.username}`} 
             color="secondary" 
             variant="outlined"
+            sx={{ ml: 1 }}
           />
         </Toolbar>
       </AppBar>

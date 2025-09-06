@@ -9,9 +9,13 @@ import {
   Alert,
   Tabs,
   Tab,
-  CircularProgress
+  CircularProgress,
+  AppBar,
+  Toolbar,
+  IconButton
 } from '@mui/material';
 import { useAuth } from '../contexts/AuthContext';
+import ThemeToggle from './ThemeToggle';
 
 function TabPanel({ children, value, index, ...other }) {
   return (
@@ -237,15 +241,24 @@ function Login() {
   };
 
   return (
-    <Container component="main" maxWidth="sm">
-      <Box
-        sx={{
-          marginTop: 8,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-        }}
-      >
+    <Box>
+      <AppBar position="static" color="transparent" elevation={0}>
+        <Toolbar>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Tweak Application
+          </Typography>
+          <ThemeToggle />
+        </Toolbar>
+      </AppBar>
+      <Container component="main" maxWidth="sm">
+        <Box
+          sx={{
+            marginTop: 4,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
         <Paper elevation={3} sx={{ width: '100%', padding: 2 }}>
           <Typography component="h1" variant="h4" align="center" gutterBottom>
             Tweak Application
@@ -434,8 +447,9 @@ function Login() {
           )}
         </Paper>
       </Box>
-    </Container>
-  );
-}
+        </Container>
+      </Box>
+    );
+  }
 
 export default Login;
