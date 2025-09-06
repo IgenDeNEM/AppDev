@@ -25,6 +25,10 @@ const crashReportsRoutes = require('./routes/crashReports');
 const offlineCacheRoutes = require('./routes/offlineCache');
 const keyStatisticsRoutes = require('./routes/keyStatistics');
 const advancedSearchRoutes = require('./routes/advancedSearch');
+const packagesRoutes = require('./routes/packages');
+const tweaksRoutes = require('./routes/tweaks');
+const rbacRoutes = require('./routes/rbac');
+const userPreferencesRoutes = require('./routes/userPreferences');
 
 const app = express();
 const server = http.createServer(app);
@@ -84,6 +88,10 @@ app.use('/api/crash-reports', crashReportsRoutes);
 app.use('/api/offline-cache', offlineCacheRoutes);
 app.use('/api/key-statistics', keyStatisticsRoutes);
 app.use('/api/advanced-search', advancedSearchRoutes);
+app.use('/api/packages', packagesRoutes);
+app.use('/api/tweaks', tweaksRoutes);
+app.use('/api/rbac', rbacRoutes);
+app.use('/api/user-preferences', userPreferencesRoutes);
 
 // Health check endpoint
 app.get('/api/health', (req, res) => {

@@ -41,6 +41,8 @@ import DashboardOverview from './admin/DashboardOverview';
 import EmailManagement from './admin/EmailManagement';
 import KeyStatistics from './admin/KeyStatistics';
 import AdvancedUserSearch from './admin/AdvancedUserSearch';
+import PackageStoreManagement from './admin/PackageStoreManagement';
+import UserRoleManagement from './admin/UserRoleManagement';
 import { ThemeMenu } from './ThemeToggle';
 
 const drawerWidth = 240;
@@ -57,9 +59,11 @@ function AdminDashboard() {
   const menuItems = [
     { id: 'dashboard', label: 'Dashboard', icon: <DashboardIcon /> },
     { id: 'users', label: 'User Management', icon: <PeopleIcon /> },
+    { id: 'roles', label: 'Role Management', icon: <PeopleIcon /> },
     { id: 'search', label: 'Advanced Search', icon: <SearchIcon /> },
     { id: 'keys', label: 'Key Management', icon: <KeyIcon /> },
     { id: 'statistics', label: 'Key Statistics', icon: <BarChartIcon /> },
+    { id: 'packages', label: 'Package Store', icon: <AddIcon /> },
     { id: 'remote', label: 'Remote Control', icon: <ScreenIcon /> },
     { id: 'email', label: 'Email Management', icon: <EmailIcon /> },
     { id: 'logs', label: 'Activity Logs', icon: <LogsIcon /> },
@@ -102,12 +106,16 @@ function AdminDashboard() {
         return <DashboardOverview />;
       case 'users':
         return <UserManagement />;
+      case 'roles':
+        return <UserRoleManagement />;
       case 'search':
         return <AdvancedUserSearch />;
       case 'keys':
         return <KeyManagement />;
       case 'statistics':
         return <KeyStatistics />;
+      case 'packages':
+        return <PackageStoreManagement />;
       case 'remote':
         return <RemoteControl />;
       case 'email':

@@ -97,71 +97,152 @@
             <main class="app-main">
                 <div class="sidebar">
                     <nav class="nav-menu">
-                        <a href="#" class="nav-item active" data-section="dashboard">
-                            <span class="material-icons">dashboard</span>
-                            Dashboard
+                        <a href="#" class="nav-item active" data-section="home">
+                            <span class="material-icons">home</span>
+                            Home
+                        </a>
+                        <a href="#" class="nav-item" data-section="remove-apps">
+                            <span class="material-icons">delete</span>
+                            Remove Apps
+                        </a>
+                        <a href="#" class="nav-item" data-section="package-store">
+                            <span class="material-icons">store</span>
+                            Package Store
                         </a>
                         <a href="#" class="nav-item" data-section="system">
                             <span class="material-icons">computer</span>
                             System Info
                         </a>
-                        <a href="#" class="nav-item" data-section="optimization">
-                            <span class="material-icons">speed</span>
-                            Optimization
-                        </a>
                         <a href="#" class="nav-item" data-section="monitoring">
                             <span class="material-icons">monitor</span>
                             Monitoring
                         </a>
-                        <a href="#" class="nav-item" data-section="tools">
-                            <span class="material-icons">build</span>
-                            Tools
+                        <a href="#" class="nav-item" data-section="settings">
+                            <span class="material-icons">settings</span>
+                            Settings
                         </a>
                     </nav>
                 </div>
 
                 <div class="content">
-                    <!-- Dashboard Section -->
-                    <section id="dashboard-section" class="content-section active">
-                        <h3>Dashboard</h3>
-                        <div class="dashboard-grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <span class="material-icons">memory</span>
+                    <!-- Home Section -->
+                    <section id="home-section" class="content-section active">
+                        <h3>Home - System Tweaks</h3>
+                        <div class="tweaks-container">
+                            <div class="search-bar">
+                                <input type="text" id="tweak-search" placeholder="Search tweaks...">
+                                <button class="btn btn-primary" id="search-btn">
+                                    <span class="material-icons">search</span>
+                                </button>
+                            </div>
+                            
+                            <div class="tweak-categories">
+                                <div class="category-tabs">
+                                    <button class="category-tab active" data-category="all">All</button>
+                                    <button class="category-tab" data-category="privacy">Privacy</button>
+                                    <button class="category-tab" data-category="gaming">Gaming</button>
+                                    <button class="category-tab" data-category="files">Files</button>
+                                    <button class="category-tab" data-category="updates">Updates</button>
+                                    <button class="category-tab" data-category="performance">Performance</button>
+                                    <button class="category-tab" data-category="system">System</button>
                                 </div>
-                                <div class="stat-info">
-                                    <h4>Memory Usage</h4>
-                                    <p id="memory-usage">Loading...</p>
+                                
+                                <div class="tweaks-grid" id="tweaks-grid">
+                                    <!-- Tweaks will be loaded dynamically -->
                                 </div>
                             </div>
                             
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <span class="material-icons">storage</span>
+                            <div class="quick-actions">
+                                <h4>Quick Actions</h4>
+                                <div class="quick-actions-grid">
+                                    <button class="quick-action-btn" id="performance-boost-btn">
+                                        <span class="material-icons">speed</span>
+                                        Performance Boost
+                                    </button>
+                                    <button class="quick-action-btn" id="clipboard-manager-btn">
+                                        <span class="material-icons">content_copy</span>
+                                        Clipboard Manager
+                                    </button>
+                                    <button class="quick-action-btn" id="dns-flush-btn">
+                                        <span class="material-icons">refresh</span>
+                                        DNS Flush
+                                    </button>
+                                    <button class="quick-action-btn" id="system-cleanup-btn">
+                                        <span class="material-icons">cleaning_services</span>
+                                        System Cleanup
+                                    </button>
                                 </div>
-                                <div class="stat-info">
-                                    <h4>Disk Usage</h4>
-                                    <p id="disk-usage">Loading...</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Remove Apps Section -->
+                    <section id="remove-apps-section" class="content-section">
+                        <h3>Remove Applications</h3>
+                        <div class="remove-apps-container">
+                            <div class="apps-header">
+                                <div class="search-bar">
+                                    <input type="text" id="app-search" placeholder="Search applications...">
+                                    <button class="btn btn-primary" id="app-search-btn">
+                                        <span class="material-icons">search</span>
+                                    </button>
+                                </div>
+                                <div class="apps-controls">
+                                    <label class="checkbox-label">
+                                        <input type="checkbox" id="safe-mode-checkbox">
+                                        Safe Mode
+                                    </label>
+                                    <button class="btn btn-danger" id="uninstall-selected-btn" disabled>
+                                        <span class="material-icons">delete</span>
+                                        Uninstall Selected
+                                    </button>
                                 </div>
                             </div>
                             
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <span class="material-icons">network_check</span>
+                            <div class="apps-filter-tabs">
+                                <button class="filter-tab active" data-filter="all">All Apps</button>
+                                <button class="filter-tab" data-filter="installed">Installed</button>
+                                <button class="filter-tab" data-filter="system">System Apps</button>
+                                <button class="filter-tab" data-filter="third-party">Third-Party</button>
+                            </div>
+                            
+                            <div class="apps-list" id="apps-list">
+                                <!-- Applications will be loaded dynamically -->
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Package Store Section -->
+                    <section id="package-store-section" class="content-section">
+                        <h3>Package Store</h3>
+                        <div class="package-store-container">
+                            <div class="store-header">
+                                <div class="search-bar">
+                                    <input type="text" id="package-search" placeholder="Search packages...">
+                                    <button class="btn btn-primary" id="package-search-btn">
+                                        <span class="material-icons">search</span>
+                                    </button>
                                 </div>
-                                <div class="stat-info">
-                                    <h4>Network Status</h4>
-                                    <p id="network-status">Loading...</p>
+                                <div class="store-controls">
+                                    <button class="btn btn-secondary" id="refresh-packages-btn">
+                                        <span class="material-icons">refresh</span>
+                                        Refresh
+                                    </button>
                                 </div>
                             </div>
                             
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <span class="material-icons">security</span>
+                            <div class="package-categories">
+                                <div class="category-tabs">
+                                    <button class="category-tab active" data-category="all">All</button>
+                                    <button class="category-tab" data-category="browsers">Browsers</button>
+                                    <button class="category-tab" data-category="gaming">Gaming</button>
+                                    <button class="category-tab" data-category="communication">Communication</button>
+                                    <button class="category-tab" data-category="developer">Developer Tools</button>
+                                    <button class="category-tab" data-category="utilities">Utilities</button>
                                 </div>
-                                <div class="stat-info">
-                                    <h4>Security Status</h4>
-                                    <p id="security-status">Secure</p>
+                                
+                                <div class="packages-grid" id="packages-grid">
+                                    <!-- Packages will be loaded dynamically -->
                                 </div>
                             </div>
                         </div>
@@ -289,6 +370,145 @@
                                 <button class="btn btn-primary" id="system-info-btn">
                                     <span class="material-icons">info</span>
                                     View Details
+                                </button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Settings Section -->
+                    <section id="settings-section" class="content-section">
+                        <h3>Settings</h3>
+                        <div class="settings-container">
+                            <div class="settings-tabs">
+                                <button class="settings-tab active" data-tab="general">General</button>
+                                <button class="settings-tab" data-tab="appearance">Appearance</button>
+                                <button class="settings-tab" data-tab="security">Security</button>
+                                <button class="settings-tab" data-tab="notifications">Notifications</button>
+                            </div>
+                            
+                            <div class="settings-content">
+                                <!-- General Settings -->
+                                <div id="general-settings" class="settings-panel active">
+                                    <h4>General Settings</h4>
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="safe-mode-setting">
+                                            Safe Mode
+                                        </label>
+                                        <p class="setting-description">Prevent execution of dangerous tweaks and system modifications</p>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="auto-update-setting">
+                                            Auto Update
+                                        </label>
+                                        <p class="setting-description">Automatically check for and install updates</p>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="startup-setting">
+                                            Start with Windows
+                                        </label>
+                                        <p class="setting-description">Launch Tweak Application when Windows starts</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Appearance Settings -->
+                                <div id="appearance-settings" class="settings-panel">
+                                    <h4>Appearance</h4>
+                                    <div class="setting-item">
+                                        <label class="setting-label">Theme</label>
+                                        <select id="theme-select">
+                                            <option value="light">Light</option>
+                                            <option value="dark">Dark</option>
+                                            <option value="system">System</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="always-on-top-setting">
+                                            Always On Top
+                                        </label>
+                                        <p class="setting-description">Keep the application window above other windows</p>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="compact-mode-setting">
+                                            Compact Mode
+                                        </label>
+                                        <p class="setting-description">Use a more compact interface layout</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Security Settings -->
+                                <div id="security-settings" class="settings-panel">
+                                    <h4>Security</h4>
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="email-verification-setting">
+                                            Email Verification
+                                        </label>
+                                        <p class="setting-description">Require email verification for sensitive actions</p>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="log-actions-setting">
+                                            Log All Actions
+                                        </label>
+                                        <p class="setting-description">Keep a detailed log of all performed actions</p>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="admin-approval-setting">
+                                            Admin Approval
+                                        </label>
+                                        <p class="setting-description">Require admin approval for system modifications</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Notification Settings -->
+                                <div id="notifications-settings" class="settings-panel">
+                                    <h4>Notifications</h4>
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="desktop-notifications-setting">
+                                            Desktop Notifications
+                                        </label>
+                                        <p class="setting-description">Show desktop notifications for completed actions</p>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="sound-notifications-setting">
+                                            Sound Notifications
+                                        </label>
+                                        <p class="setting-description">Play sounds for notifications</p>
+                                    </div>
+                                    
+                                    <div class="setting-item">
+                                        <label class="setting-label">
+                                            <input type="checkbox" id="email-notifications-setting">
+                                            Email Notifications
+                                        </label>
+                                        <p class="setting-description">Send email notifications for important events</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-actions">
+                                <button class="btn btn-primary" id="save-settings-btn">
+                                    <span class="material-icons">save</span>
+                                    Save Settings
+                                </button>
+                                <button class="btn btn-secondary" id="reset-settings-btn">
+                                    <span class="material-icons">refresh</span>
+                                    Reset to Defaults
                                 </button>
                             </div>
                         </div>
