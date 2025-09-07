@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Tweak Desktop</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .settings-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .settings-section {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .settings-section h3 {
+            margin: 0 0 15px 0;
+            color: var(--text-primary);
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .setting-description {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .setting-control {
+            min-width: 120px;
+        }
+
+        select, input[type="range"], input[type="checkbox"] {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 5px 10px;
+        }
+
+        input[type="color"] {
+            width: 40px;
+            height: 30px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .color-picker-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .color-picker-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .color-picker-item label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--bg-secondary);
+        }
+
+        .btn-danger {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #b71c1c;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            color: var(--text-secondary);
+            transition: all 0.2s;
+        }
+
+        .tab.active {
+            color: var(--color-primary);
+            border-bottom-color: var(--color-primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .range-value {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .import-export-section {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="settings-container">
+        <h2>Settings</h2>
+        
+        <div class="tabs">
+            <div class="tab active" data-tab="appearance">Appearance</div>
+            <div class="tab" data-tab="behavior">Behavior</div>
+            <div class="tab" data-tab="privacy">Privacy</div>
+            <div class="tab" data-tab="advanced">Advanced</div>
+        </div>
+
+        <!-- Appearance Tab -->
+        <div class="tab-content active" id="appearance">
+            <div class="settings-section">
+                <h3>Theme</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Theme</div>
+                        <div class="setting-description">Choose your preferred theme</div>
+                    </div>
+                    <div class="setting-control">
+                        <select id="theme-select">
+                            <option value="light">Light</option>
+                            <option value="dark">Dark</option>
+                            <option value="auto">Auto (System)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Font Size</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Font Size</div>
+                        <div class="setting-description">Adjust the text size</div>
+                    </div>
+                    <div class="setting-control">
+                        <select id="font-size-select">
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="extraLarge">Extra Large</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Custom Colors</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Primary Color</div>
+                        <div class="setting-description">Main accent color</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="color" id="primary-color" value="#1976d2">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Secondary Color</div>
+                        <div class="setting-description">Secondary accent color</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="color" id="secondary-color" value="#dc004e">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Background Color</div>
+                        <div class="setting-description">Main background color</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="color" id="background-color" value="#121212">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Surface Color</div>
+                        <div class="setting-description">Card and panel background</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="color" id="surface-color" value="#1e1e1e">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Text Color</div>
+                        <div class="setting-description">Primary text color</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="color" id="text-color" value="#ffffff">
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Layout</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Show Sidebar</div>
+                        <div class="setting-description">Display the navigation sidebar</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="sidebar-toggle" checked>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Sidebar Width</div>
+                        <div class="setting-description">Width of the sidebar in pixels</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="range" id="sidebar-width" min="200" max="400" value="250">
+                        <span class="range-value" id="sidebar-width-value">250px</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Compact Mode</div>
+                        <div class="setting-description">Use smaller spacing and elements</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="compact-mode-toggle">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Behavior Tab -->
+        <div class="tab-content" id="behavior">
+            <div class="settings-section">
+                <h3>Startup</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Start with Windows</div>
+                        <div class="setting-description">Automatically start the app when Windows starts</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="auto-start-toggle">
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Minimize to Tray</div>
+                        <div class="setting-description">Minimize to system tray instead of taskbar</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="minimize-to-tray-toggle" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Notifications</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Enable Notifications</div>
+                        <div class="setting-description">Show system notifications</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="notifications-toggle" checked>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Sound Effects</div>
+                        <div class="setting-description">Play sounds for notifications and actions</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="sound-effects-toggle" checked>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Language</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Language</div>
+                        <div class="setting-description">Interface language</div>
+                    </div>
+                    <div class="setting-control">
+                        <select id="language-select">
+                            <option value="en">English</option>
+                            <option value="es">Español</option>
+                            <option value="fr">Français</option>
+                            <option value="de">Deutsch</option>
+                            <option value="zh">中文</option>
+                            <option value="ja">日本語</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Privacy Tab -->
+        <div class="tab-content" id="privacy">
+            <div class="settings-section">
+                <h3>Data Collection</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Analytics</div>
+                        <div class="setting-description">Help improve the app by sharing anonymous usage data</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="analytics-toggle" checked>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Crash Reports</div>
+                        <div class="setting-description">Automatically send crash reports to help fix bugs</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="crash-reports-toggle" checked>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Telemetry</div>
+                        <div class="setting-description">Send performance and diagnostic data</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="checkbox" id="telemetry-toggle">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Advanced Tab -->
+        <div class="tab-content" id="advanced">
+            <div class="settings-section">
+                <h3>Window</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Window Size</div>
+                        <div class="setting-description">Default window size</div>
+                    </div>
+                    <div class="setting-control">
+                        <select id="window-size-select">
+                            <option value="small">Small (800x600)</option>
+                            <option value="normal">Normal (1024x768)</option>
+                            <option value="large">Large (1280x1024)</option>
+                            <option value="fullscreen">Fullscreen</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="import-export-section">
+                <h3>Import/Export Settings</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Export Settings</div>
+                        <div class="setting-description">Save your settings to a file</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-secondary" id="export-settings-btn">Export</button>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Import Settings</div>
+                        <div class="setting-description">Load settings from a file</div>
+                    </div>
+                    <div class="setting-control">
+                        <input type="file" id="import-settings-file" class="file-input" accept=".json">
+                        <button class="btn btn-secondary" id="import-settings-btn">Import</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="settings-section">
+                <h3>Reset</h3>
+                <div class="setting-item">
+                    <div>
+                        <div class="setting-label">Reset to Defaults</div>
+                        <div class="setting-description">Restore all settings to their default values</div>
+                    </div>
+                    <div class="setting-control">
+                        <button class="btn btn-danger" id="reset-settings-btn">Reset</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn btn-primary" id="save-settings-btn">Save Settings</button>
+            <button class="btn btn-secondary" id="cancel-settings-btn">Cancel</button>
+        </div>
+    </div>
+
+    <script src="settings.js"></script>
+    <script src="settings-ui.js"></script>
+</body>
+</html>
